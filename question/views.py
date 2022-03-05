@@ -1,12 +1,31 @@
 from django.shortcuts import render
-from .forms import Quest
+from .forms import Quest, Add
+from .models import Quest as quest_model
 
+
+count = 1
 def index(request):
-    quest2 = Quest()
-    quest2.initial['form'] = 'form2'
-    form = [quest2]
+    global count
     if request.POST:
-        print(request.POST)
-        # print(request.POST.get('quest'))
-        # print(request.POST.get('form'))
-    return render(request, 'question/index.html', {'forms': form})
+        if request.POST.get('add'):
+            count += 1
+        if request.POST.get('quest'):
+            a = dict(request.POST)
+            quest = a.get('quest')
+            form = a.get('form')
+            quest_form = zip(quest, form)
+            for quest, form in quest_form:
+                print(len(quest))
+                if quest:
+                    quest_model.objects.create(form={'quest': quest, 'form': form})
+                print(quest, form)
+            # print(list(quest_form))
+    if request.method == 'GET':
+        count = 1
+    add = Add()
+    quests = []
+    for i in range(count):
+        a = Quest()
+        a.initial['form'] = f'form{i}'
+        quests.append(a)
+    return render(request, 'question/index.html', {'forms': quests, 'add': add})
