@@ -7,14 +7,15 @@ from .models import Quest as quest_model
 count = 1
 def index(request):
     global count
-    if request.POST:
-        print(request.POST)
+    if request.POST: #this condition added window for input
+        # print(request.POST)
         if request.POST.get('add'):
             count += 1
-        if request.POST.get('quest'):
+        if request.POST.get('quest'):  #this condition save form with input connected by numbers
             a = dict(request.POST)
             quest = a.get('quest')
             form = a.get('form')
+            # print(quest, form)
             quest_form = zip(quest, form)
             for quest, form in quest_form:
                 if quest:
@@ -31,4 +32,3 @@ def index(request):
 
 class List_quests(ListView):
     model = quest_model
-
